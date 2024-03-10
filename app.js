@@ -40,7 +40,7 @@ app.use(cors({
 dotenv.config();
 
 // MongoDB connection
-mongoose.connect('mongodb+srv://anushma2015:RTecMjFUxbQO7plU@cluster0.59qkwy6.mongodb.net/');
+mongoose.connect('mongodb+srv://anushma2015:RTecMjFUxbQO7plU@cluster0.59qkwy6.mongodb.net/localconnect');
 console.log("connected to MongoDB")  //this will disable when connected to atlas
 //mongoose.connect('mongodb://127.0.0.1:27017/Localconnectapp');
 //console.log("Connected to MongoDB");

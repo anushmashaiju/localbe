@@ -16,11 +16,11 @@ try{
         email:req.body.email,
          password:hashedPassword,
  });
-const user = await newUser.save();
-res.status(200).json(user);
+ const user = await newUser.save();
+ res.status(201).json({ success: true, message: 'User created successfully', user });
 } catch (err) {
-console.error("Error during user registration:", err);
-res.status(500).json({ error: "Internal Server Error" });
+ console.error("Error during user registration:", err);
+ res.status(500).json({ error: "Internal Server Error" });
 }
 });
 
@@ -28,21 +28,25 @@ res.status(500).json({ error: "Internal Server Error" });
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await User.findOne({ email: email });
-        if (user) {
-            const response = await bcrypt.compare(password, user.password);
-            if (response) {
-                const token = jwt.sign({email:user.email},"localconnectsecretkey",{expiresIn:"1d"})
-                res.cookie("token",token);
-                res.status(200).json({ success: true, message: 'Login successful', token ,_id:user._id,userName:user.userName});
-            } else {
-                res.json("incorrect password");
-            }
-        } else {
-            res.json("no record existed");
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(401).json({ error: 'No record exists for the given email' });
         }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: 'Incorrect password' });
+        }
+
+        const token = jwt.sign({ email: user.email, _id: user._id }, "your-secret-key", { expiresIn: "1d" });
+        
+        res.cookie("token", token, { httpOnly: true, secure: true });
+        res.status(200).json({ success: true, message: 'Login successful', token, _id: user._id, userName: user.userName });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error("Error during login:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 

@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const multer = require("multer");
 
-const indexRoute = require('./routes/index');
+
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
@@ -89,7 +89,7 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
 });
 
 // Routes
-app.use("/api/", indexRoute);
+
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/posts", postRoute);

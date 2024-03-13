@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS setup
 app.use(cors({
-  origin:['https://localconnectprojectfeclient.onrender.com','http://localhost:3000']
+  origin:['https://localconnectfe.onrender.com','http://localhost:3000']
 }));
 /*app.use(cors({
   origin: ["http://localhost:3000"],

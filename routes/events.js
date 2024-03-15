@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const Event = require('../models/Event');
@@ -55,5 +54,26 @@ router.delete("/:eventId", async (req, res) => {
   }
 });
 
+// Fetch today's and tomorrow's events
+router.get('/todaysAndTomorrowsEvents', async (req, res) => {
+  try {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const todaysEvents = await Event.find({
+      date: { $gte: today, $lt: tomorrow }
+    });
+
+    const tomorrowsEvents = await Event.find({
+      date: { $gte: tomorrow, $lt: new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000) }
+    });
+
+    res.status(200).json({ todaysEvents, tomorrowsEvents });
+  } catch (error) {
+    console.error('Error fetching today\'s and tomorrow\'s events:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 module.exports = router;
